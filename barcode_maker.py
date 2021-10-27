@@ -9,6 +9,9 @@ class barcode:
         self.seq = seq
         self.gc = (seq.count("A")+seq.count("T"))/float(len(seq))
     def one_bp_diff(self):
+        """Method to generate list of barcodes with one mutation away from input barcode
+
+        """
         base_list = ["A","T","C","G"]
         diff_list = []
         for i in range(0,len(self.seq)):
@@ -18,6 +21,9 @@ class barcode:
                     diff_list.append(altbc)
         return diff_list
     def pass_filters(self):
+        """Method to check for homopolymers and high or low gc-content
+
+        """
         if 0.25 < self.gc < 0.75 and \
         "A"*3 not in self.seq and \
         "G"*3 not in self.seq and \
@@ -30,7 +36,7 @@ class barcode:
 class barcode_population:
     """Class to generate population of barcodes, filter members by barcode stats, subset a group of barcodes that have have hamming distance > 1, and then iterate through combinations of these to find a balanced set.
 
-    """ 
+    """
     def __init__(self,membern,bclen,nucs):
         self._membern = membern
         self._bclen = bclen
@@ -75,7 +81,7 @@ class barcode_population:
         return True
 
 def main():
-    bcpop = barcode_population(12,4,"ATCG")
+    bcpop = barcode_population(24,4,"ATCG")
     z = 0
     for i in bcpop.nuc_combos():
         z+=1
