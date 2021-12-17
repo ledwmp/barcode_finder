@@ -2,14 +2,14 @@ from itertools import product
 from itertools import combinations
 
 class barcode:
-    """Class to store barcode and generate barcode stats
+    """Stores barcode and generate barcode stats.
 
     """
     def __init__(self,seq):
         self.seq = seq
         self.gc = (seq.count("A")+seq.count("T"))/float(len(seq))
     def one_bp_diff(self):
-        """Method to generate list of barcodes with one mutation away from input barcode
+        """Generate list of barcodes with one mutation away from input barcode.
         Returns:
             List of barcodes >1 mutation away from input barcode
         """
@@ -22,7 +22,7 @@ class barcode:
                     diff_list.append(altbc)
         return diff_list
     def pass_filters(self):
-        """Method to check for homopolymers and high or low gc-content
+        """Check for homopolymers and high or low gc-content.
         Returns:
             True if passes homopolymer and gc-filter
         """
@@ -36,8 +36,9 @@ class barcode:
             return False
 
 class barcode_population:
-    """Class to generate population of barcodes, filter members by barcode stats, subset a group of barcodes that have have hamming distance > 1, and then iterate through combinations of these to find a balanced set.
-
+    """Generates population of barcodes, filter members by barcode stats, subset
+    a group of barcodes that have have hamming distance > 1, and then iterate
+    through combinations of these to find a balanced set.
     """
     def __init__(self,membern,bclen,nucs):
         self._membern = membern
@@ -46,21 +47,23 @@ class barcode_population:
         self._nucs = nucs
         self._members = []
     def generate_members(self):
-        """Method to generate all possible barcodes of length bclen
+        """Generate all possible barcodes of length bclen
         Returns:
             List of possible barcodes
         """
-        self._members = [barcode("".join(i)) for i in product(self._nucs,repeat=self._bclen)]
+        self._members = [barcode("".join(i)) for i in product(\
+                                                self._nucs,repeat=self._bclen)]
         return self._members
     def filter_members(self):
-        """Method to filter barcodes based on pass_filters method of barcode
+        """Filter barcodes based on pass_filters method of barcode.
         Returns:
             List of filtered barcodes
         """
-        self._filtermembers = [i for i in self.generate_members() if i.pass_filters() == True]
+        self._filtermembers = [i for i in self.generate_members() \
+                                                    if i.pass_filters() == True]
         return self._filtermembers
     def hammed_members(self):
-        """Method to generate subset of barcodes that have a hamming distance > 1
+        """Generate subset of barcodes that have a hamming distance > 1.
         Returns:
             List of barcode objects that are >1 nucleotide away from eachother
         """
@@ -71,7 +74,8 @@ class barcode_population:
         self._hammedmembers = tmp_list
         return self._hammedmembers
     def separate_firstnuc(self):
-        """Method to separate groups of nucleotides that start with a given nucleotide, first nucleotide doesn't need to be random
+        """Separate groups of nucleotides that start with a given nucleotide,
+        first nucleotide doesn't need to be random.
         Returns:
             Dictionary with key=first nuc, value=list of barcode objects
         """
@@ -81,7 +85,8 @@ class barcode_population:
         self._firstbasedict = out_dict
         return self._firstbasedict
     def nuc_combos(self):
-        """Method to make generator function so that combinations of barcodes can be iterated upon
+        """Make generator function so that combinations of barcodes can be
+        iterated upon.
         Returns:
             Generator of possible barcode populations
         """
@@ -92,7 +97,7 @@ class barcode_population:
         self._allcombos = all_combinations
         return self._allcombos
     def balance_check(self,tmp_list):
-        """Method to check for base-balance at all positions
+        """Check for base-balance at all positions.
         Args:
             tmp_list: list of barcode objects
         Returns:
